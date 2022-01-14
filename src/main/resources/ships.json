@@ -1,0 +1,40 @@
+{
+  "ships" : [
+    {
+      "shipId": 1,
+      "isLoaded" : true
+    },
+    {
+      "shipId" : 2,
+      "isLoaded" : true
+    },
+    {
+      "shipId" : 3,
+      "isLoaded" : false
+    },
+    {
+      "shipId" : 4,
+      "isLoaded" : true
+    },
+    {
+      "shipId" : 5,
+      "isLoaded" : false
+    },
+    {
+      "shipId" : 6,
+      "isLoaded" : false
+    },
+    {
+      "shipId" : 7,
+      "isLoaded" : true
+    },
+    {
+      "shipId" : 8,
+      "isLoaded" : false
+    },
+    {
+      "shipId" : 9,
+      "isLoaded" : true
+    }
+  ]
+}

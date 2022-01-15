@@ -3,17 +3,18 @@ package com.epam.training.entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.IntStream;
 
 public class Port {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int NUMBER_OF_DOCKS = 4;
 
-    List<Dock> docks = new ArrayList<>();
+    Queue<Dock> docks = new LinkedList<>();
     Semaphore semaphore = new Semaphore(NUMBER_OF_DOCKS);
     private static final Lock lock = new ReentrantLock();
     private static Port instance;
@@ -22,11 +23,15 @@ public class Port {
         Port localInstance = instance;
         if (localInstance == null) {
             lock.lock();
-            localInstance = instance;
-            if (localInstance == null) {
-                instance = localInstance = new Port();
+            try {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new Port();
+                    instance.createDocks();
+                }
+            } finally {
+                lock.unlock();
             }
-            lock.unlock();
         }
         return localInstance;
     }
@@ -36,9 +41,11 @@ public class Port {
             semaphore.acquire();
             lock.lock();
             LOGGER.info(String.format("%s moored %s", ship, this));
-            Dock dock = docks.get(0);
-            dock.serve(ship);
-            //System.out.println("dock.getShipsServed() = " + dock.getShipsServed());
+            Dock dock = docks.poll();
+            if (dock != null) {
+                dock.serve(ship);
+            }
+            docks.offer(dock);
             LOGGER.info(String.format("%s served %s", ship, this));
         } catch (InterruptedException e) {
             LOGGER.warn("InterruptedException caught", e);
@@ -47,5 +54,9 @@ public class Port {
             lock.unlock();
         }
     }
+
+    void createDocks(){
+        IntStream.range(0, NUMBER_OF_DOCKS).mapToObj(dock -> new Dock()).forEach(dock -> docks.add(dock));
+        }
 }
 

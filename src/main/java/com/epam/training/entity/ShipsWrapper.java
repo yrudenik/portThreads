@@ -2,14 +2,14 @@ package com.epam.training.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
+import java.util.Queue;
 
 public class ShipsWrapper {
 
     @JsonProperty
-    private List<Ship> ships;
+    private Queue<Ship> ships;
 
-    public List<Ship> getShips() {
+    public Queue<Ship> getShips() {
         return ships;
     }
 }
